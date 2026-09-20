@@ -1,71 +1,44 @@
 import React from 'react';
 
-/**
- * Accessible Toggle Switch Component
- * Compliant with WCAG 2.1 AA and WAI-ARIA Switch pattern
- */
 export const CookieToggle = ({
   id,
   checked,
   onChange,
   disabled = false,
-  label,
-  description,
+  label = '',
+  ariaDescribedBy,
 }) => {
-  const handleClick = () => {
-    if (!disabled && onChange) {
-      onChange(!checked);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (disabled) return;
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      if (onChange) {
-        onChange(!checked);
-      }
-    }
-  };
-
   return (
-    <div className="flex items-center justify-between gap-3">
-      {label && (
-        <label
-          htmlFor={id}
-          className={`text-xs font-semibold select-none cursor-pointer ${
-            disabled ? 'text-neutral-400 cursor-not-allowed' : 'text-neutral-900'
-          }`}
-          onClick={handleClick}
-        >
-          {label}
-        </label>
-      )}
-
-      <button
-        type="button"
-        id={id}
-        role="switch"
-        aria-checked={checked}
-        aria-label={label || 'Toggle cookie category'}
-        aria-describedby={description ? `${id}-desc` : undefined}
-        disabled={disabled}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
+    <div className="flex items-center gap-3">
+      <label
+        htmlFor={id}
+        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 ${
           disabled
-            ? 'bg-neutral-200 opacity-80 cursor-not-allowed'
+            ? 'cursor-not-allowed bg-blue-600/40 opacity-70'
             : checked
-            ? 'bg-blue-600'
-            : 'bg-neutral-300 hover:bg-neutral-400'
+            ? 'cursor-pointer bg-blue-600'
+            : 'cursor-pointer bg-neutral-300 dark:bg-neutral-700'
         }`}
       >
+        <span className="sr-only">{label || 'Toggle cookie category'}</span>
+        <input
+          id={id}
+          type="checkbox"
+          role="switch"
+          aria-checked={checked}
+          aria-describedby={ariaDescribedBy}
+          checked={checked}
+          disabled={disabled}
+          onChange={(e) => !disabled && onChange(e.target.checked)}
+          className="sr-only"
+        />
         <span
+          aria-hidden="true"
           className={`pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-            checked ? 'translate-x-5' : 'translate-x-0'
+            checked ? 'translate-x-5' : 'translate-x-0.5'
           }`}
         />
-      </button>
+      </label>
     </div>
   );
 };

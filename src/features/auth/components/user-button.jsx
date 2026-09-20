@@ -16,7 +16,7 @@ export const UserButton = () => {
     if (!user)
         return null;
     const { name, email } = user;
-    const avatarFallback = (name?.charAt(0) || email?.charAt(0) || 'U').toUpperCase();
+    const avatarFallback = name ? name.charAt(0).toUpperCase() : (email.charAt(0).toUpperCase() ?? '?');
     return (<DropdownMenu modal={false}>
       <DropdownMenuTrigger disabled={isPending} className="relative rounded-full outline-none focus-visible:ring-1 focus-visible:ring-ring">
         <Avatar className="size-10 border border-neutral-300 transition hover:opacity-75">

@@ -286,7 +286,7 @@ CREATE TABLE audit_logs (
     ],
     useCases: [
       'Auto-escalating Critical Incidents to On-Call Leads',
-      'Synchronizing GitHub Pull Request Merges with Ticket Cards',
+      'Synchronizing GitHub Pull Request Merges with Jira Cards',
       'Auto-assigning QA Reviewers on "In Review" Status Changes',
       'Notifying Stakeholders on Sprint Completion',
     ],
@@ -384,7 +384,7 @@ GROUP BY project_id;`,
     heroGradient: 'from-cyan-600 via-blue-600 to-indigo-700',
     badge: 'Enterprise Service Management',
     overview:
-      'Bridge the gap between customer service requests and internal engineering delivery. klanservicehub includes a full-featured Enterprise Service Management suite with customer request portals, tiered SLA queues, incident response protocols, and CMDB asset dependencies.',
+      'Bridge the gap between customer service requests and internal engineering delivery. klanservicehub includes a full-featured Jira Service Management (JSM) suite with customer request portals, tiered SLA queues, incident response protocols, and CMDB asset dependencies.',
     coreCapabilities: [
       {
         title: 'Tiered SLA Response & Resolution Queues',
@@ -770,7 +770,7 @@ export const SolutionDetailPage = () => {
 
                 <div className="pt-4 border-t border-neutral-100">
                   <p className="text-[11px] text-neutral-500">
-                    Engineered under Klanvision IT Solutions enterprise delivery specifications.
+                    Engineered under Klanvision IT Solutions delivery specifications by Ramakrishna (RK).
                   </p>
                 </div>
               </div>

@@ -15,7 +15,7 @@ export const Link = React.forwardRef(({ href, onClick, children, ...props }, ref
   };
 
   return (
-    <RouterLink ref={ref} to={href || '#'} onClick={handleClick} {...props}>
+    <RouterLink ref={ref} to={href} onClick={handleClick} {...props}>
       {children}
     </RouterLink>
   );

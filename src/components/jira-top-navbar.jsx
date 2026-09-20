@@ -126,23 +126,20 @@ export const JiraTopNavbar = () => {
                   <div className="fixed inset-0 z-40" onClick={() => setActiveDropdown(null)} />
                   <div className="absolute left-0 mt-1 z-50 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-xl animate-in fade-in">
                     <p className="text-[10px] uppercase font-bold text-neutral-400 px-2 py-1">Recent Projects</p>
-                    {projects.map((p) => {
-                      const projId = p.$id || p.id;
-                      return (
-                        <Link
-                          key={projId}
-                          href={`/workspaces/${workspaceId}/projects/${projId}`}
-                          onClick={() => setActiveDropdown(null)}
-                          className="flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-neutral-100 transition text-xs font-semibold text-neutral-800"
-                        >
-                          <FolderGit2 className="size-4 text-blue-600" />
-                          <div>
-                            <p className="truncate">{p.name}</p>
-                            <span className="text-[10px] text-neutral-400 font-mono">{p.key || 'PROJ'}</span>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                    {projects.map((p) => (
+                      <Link
+                        key={p.$id}
+                        href={`/workspaces/${workspaceId}/projects/${p.$id}`}
+                        onClick={() => setActiveDropdown(null)}
+                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-neutral-100 transition text-xs font-semibold text-neutral-800"
+                      >
+                        <FolderGit2 className="size-4 text-blue-600" />
+                        <div>
+                          <p className="truncate">{p.name}</p>
+                          <span className="text-[10px] text-neutral-400 font-mono">{p.key || 'PROJ'}</span>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
                 </>
               )}

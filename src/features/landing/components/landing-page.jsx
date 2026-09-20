@@ -42,10 +42,14 @@ import {
   Settings2,
   Maximize2,
   Minimize2,
+  Cookie,
 } from 'lucide-react';
 
 export const LandingPageView = () => {
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
+  const [isDevModalOpen, setIsDevModalOpen] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
   const [billingCycle, setBillingCycle] = useState('MONTHLY');
 
@@ -54,6 +58,24 @@ export const LandingPageView = () => {
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const duration = 3000; // 3 seconds
+
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(Math.round((elapsed / duration) * 100), 100);
+      setProgress(pct);
+
+      if (elapsed >= duration) {
+        clearInterval(interval);
+        setLoading(false);
+      }
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const [openFaqs, setOpenFaqs] = useState({});
   const [faqCategory, setFaqCategory] = useState('all');
@@ -91,13 +113,13 @@ export const LandingPageView = () => {
 
   const faqs = [
     {
-      id: 'platform-arch',
+      id: 'dev-arch',
       category: 'architecture',
       badge: 'Platform Engineering',
-      q: 'What is the underlying architecture of KlanServiceHub?',
-      a: 'KlanServiceHub was engineered by Klanvision IT Solutions as an enterprise-grade work management and issue tracking suite. Built on modern React, TailwindCSS, Hono, Node.js, and Cloudflare D1 / SQLite distributed edge databases for ultra-fast query execution and real-time state synchronization.',
+      q: 'Who developed klanservicehub and what is the underlying architecture?',
+      a: 'klanservicehub was engineered and developed by Ramakrishna (RK) under Klanvision IT Solutions. Built on React 19, TailwindCSS, Hono, Node.js, and Cloudflare D1 / SQLite distributed edge databases for ultra-fast query execution and real-time state synchronization.',
       advanced: 'Query execution runs through compiled prepared statements with connection reuse (<10ms p99 latency). State mutations are broadcast over optimistic WebSocket channels with automatic conflict resolution.',
-      specs: ['Modern React & Next-style routing', 'Hono micro-framework', 'Cloudflare D1 / SQLite', '<10ms query execution'],
+      specs: ['React 19 & Next-style routing', 'Hono micro-framework', 'Cloudflare D1 / SQLite', '<10ms query execution'],
     },
     {
       id: 'delivery-governance',
@@ -179,6 +201,50 @@ export const LandingPageView = () => {
     filteredFaqs.length > 0 &&
     filteredFaqs.every((f) => openFaqs[f.id]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white text-neutral-900 flex flex-col items-center justify-center p-6 select-none font-sans">
+        <div className="flex flex-col items-center max-w-sm w-full space-y-6 text-center animate-in fade-in zoom-in duration-300">
+          {/* Logo with pulse */}
+          <div className="relative">
+            <div className="size-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-blue-500/30 animate-pulse">
+              K
+            </div>
+            <div className="absolute -inset-2 rounded-3xl bg-blue-500/20 -z-10 animate-ping" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-black text-neutral-950 tracking-tight">klanservicehub</h2>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-800">
+              <Code2 className="size-3.5 text-emerald-600" />
+              <span>Developed by RK</span>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full space-y-2 pt-2">
+            <div className="h-2.5 w-full bg-neutral-100 rounded-full overflow-hidden border border-neutral-200 p-0.5">
+              <div
+                className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-75 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <div className="flex justify-between items-center text-[11px] text-neutral-500 font-mono">
+              <span>
+                {progress < 35
+                  ? 'Initializing workspace...'
+                  : progress < 75
+                  ? 'Loading agile enterprise modules...'
+                  : 'Preparing experience...'}
+              </span>
+              <span className="font-bold text-blue-600">{progress}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col selection:bg-blue-600 selection:text-white font-sans scroll-smooth">
       {/* Top SaaS Header */}
@@ -189,20 +255,43 @@ export const LandingPageView = () => {
               K
             </div>
             <span className="font-black text-lg tracking-tight text-neutral-950">klanservicehub</span>
-            <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-neutral-100 px-2.5 py-0.5 text-[10px] font-bold text-neutral-700">
-              Enterprise Suite
+            <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
+              <Code2 className="size-3" /> Developed by RK
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-neutral-600">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold text-neutral-600">
             <a href="#features" className="hover:text-blue-600 transition">Product</a>
             <a href="#solutions" className="hover:text-blue-600 transition">Solutions</a>
             <a href="#pricing" className="hover:text-blue-600 transition">Pricing</a>
             <a href="#faq" className="hover:text-blue-600 transition">FAQ</a>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-preferences'))}
+              className="text-neutral-600 hover:text-blue-600 transition font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <Cookie className="size-3.5 text-blue-600" />
+              <span>Cookie Settings</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-dev-modal'))}
+              className="text-neutral-600 hover:text-blue-600 transition font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <User className="size-3.5 text-emerald-600" />
+              <span>Developer Details</span>
+            </button>
           </nav>
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/cookies"
+            className="hidden sm:inline-flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition"
+          >
+            <Cookie className="size-3.5" />
+            <span>Cookies</span>
+          </Link>
           <Link
             href="/sign-in"
             className="rounded-xl px-4 py-2 text-xs font-bold text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 transition"
@@ -224,8 +313,15 @@ export const LandingPageView = () => {
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700 shadow-xs">
             <Sparkles className="size-3.5" />
-            <span>Next-Generation Enterprise Organization & Roles Architecture</span>
+            <span>New: Klanvision Enterprise Organization & Roles Architecture</span>
           </div>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-dev-modal'))}
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 hover:bg-emerald-100/80 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-xs transition cursor-pointer"
+          >
+            <Code2 className="size-3.5 text-emerald-600" />
+            <span>Application Developed by RK</span>
+          </button>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-neutral-950 max-w-4xl mx-auto leading-tight">
@@ -295,7 +391,7 @@ export const LandingPageView = () => {
         </div>
       </section>
 
-      {/* Interactive Board Preview Graphic */}
+      {/* Interactive Jira Board Preview Graphic */}
       <section className="px-6 max-w-6xl mx-auto pb-20">
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4 sm:p-6 shadow-2xl text-white overflow-hidden">
           <div className="flex items-center justify-between pb-4 border-b border-neutral-800 text-xs">
@@ -354,7 +450,7 @@ export const LandingPageView = () => {
                 <p className="font-semibold text-white">Real-time SSE event broadcaster</p>
                 <div className="flex justify-between items-center pt-1 text-[10px] text-neutral-400">
                   <span className="bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-bold">Task</span>
-                  <span className="size-5 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-[9px]">DV</span>
+                  <span className="size-5 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-[9px]">RK</span>
                 </div>
               </div>
             </div>
@@ -530,7 +626,7 @@ export const LandingPageView = () => {
         <div className="text-center space-y-3">
           <h2 className="text-2xl sm:text-4xl font-bold text-neutral-950">Why Engineering Teams Choose This Platform</h2>
           <p className="text-sm text-neutral-600 max-w-xl mx-auto">
-            Engineered for developer delight, maximum responsiveness, and enterprise-grade reliability.
+            Engineered by RK for developer delight, maximum responsiveness, and enterprise-grade reliability.
           </p>
         </div>
 

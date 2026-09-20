@@ -28,19 +28,9 @@ export const MembersList = () => {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteName, setInviteName] = useState('');
-  const [invitePassword, setInvitePassword] = useState('');
   const [inviteRole, setInviteRole] = useState('Developer');
   const [sendingInvite, setSendingInvite] = useState(false);
   const [sentInviteData, setSentInviteData] = useState(null);
-
-  const generateRandomPassword = () => {
-    const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-    let rand = '';
-    for (let i = 0; i < 6; i++) {
-      rand += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return `Klan@${rand}2026!`;
-  };
 
   const handleDeleteMember = async (memberId) => {
     const ok = await confirm();
@@ -74,13 +64,10 @@ export const MembersList = () => {
       const res = await usersAdminApi.inviteUser(workspaceId, {
         email: inviteEmail.trim(),
         name: inviteName.trim() || inviteEmail.split('@')[0],
-        password: invitePassword.trim(),
         roleName: inviteRole,
         jobTitle: 'Team Member',
         department: 'General',
       });
-
-      const memberPassword = res?.password || invitePassword;
 
       if (res?.emailSent) {
         toast.success(`✉️ Invitation email sent successfully to ${inviteEmail}!`);
@@ -88,7 +75,7 @@ export const MembersList = () => {
         toast.success(`Invitation created for ${inviteEmail}`);
       }
 
-      setSentInviteData({ email: inviteEmail, password: memberPassword, inviteUrl: res.inviteUrl });
+      setSentInviteData({ email: inviteEmail, inviteUrl: res.inviteUrl });
       refetchMembers();
     } catch (err) {
       toast.error(err.message || 'Failed to send invitation');
@@ -182,7 +169,7 @@ export const MembersList = () => {
                 <div className="size-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
                   <Mail className="size-4" />
                 </div>
-                <h3 className="text-base font-bold text-neutral-900">Invite & Provision Member</h3>
+                <h3 className="text-base font-bold text-neutral-900">Invite Employee or Member</h3>
               </div>
               <button onClick={() => setInviteModalOpen(false)} className="text-neutral-400 hover:text-neutral-700">
                 <X className="size-4" />
@@ -193,39 +180,14 @@ export const MembersList = () => {
               <div className="space-y-4 py-2">
                 <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center space-y-2">
                   <CheckCircle2 className="size-10 text-emerald-600 mx-auto" />
-                  <h4 className="text-sm font-bold text-emerald-950">Member Account Provisioned!</h4>
+                  <h4 className="text-sm font-bold text-emerald-950">Invitation Email Dispatched!</h4>
                   <p className="text-xs text-emerald-800">
-                    Login credentials have been emailed directly to <strong>{sentInviteData.email}</strong>.
+                    An email was sent to <strong>{sentInviteData.email}</strong> via Gmail.
+                  </p>
+                  <p className="text-[11px] text-emerald-700 bg-emerald-100/60 rounded p-2 text-left">
+                    💡 <strong>Note:</strong> Automated invitation emails may sometimes land in the recipient's <strong>Spam / Junk</strong> folder or <strong>Updates</strong> tab. Please advise them to check there if not in primary inbox.
                   </p>
                 </div>
-
-                {sentInviteData.password && (
-                  <div className="rounded-xl bg-slate-900 border border-slate-800 p-4 text-left space-y-2 text-xs text-slate-300">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-blue-400">🔑 Member Login Credentials</div>
-                    <div>
-                      <span className="text-[11px] text-slate-400 block">Login Email:</span>
-                      <span className="font-mono font-bold text-white text-xs">{sentInviteData.email}</span>
-                    </div>
-                    <div>
-                      <span className="text-[11px] text-slate-400 block">Temporary Password:</span>
-                      <div className="flex items-center justify-between gap-2 mt-1 bg-slate-800/80 rounded-lg px-2.5 py-1.5 border border-slate-700">
-                        <span className="font-mono font-bold text-emerald-400 text-sm">{sentInviteData.password}</span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="secondary"
-                          className="text-[10px] h-6 px-2"
-                          onClick={() => {
-                            navigator.clipboard.writeText(sentInviteData.password);
-                            toast.success('Password copied to clipboard!');
-                          }}
-                        >
-                          Copy
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-neutral-700">Direct Invitation Link:</label>
@@ -257,7 +219,6 @@ export const MembersList = () => {
                     setSentInviteData(null);
                     setInviteEmail('');
                     setInviteName('');
-                    setInvitePassword('');
                   }}
                 >
                   Done
@@ -289,30 +250,6 @@ export const MembersList = () => {
                   />
                 </div>
 
-                {/* Password Setting / Generation */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-neutral-700">Temporary Password</label>
-                    <button
-                      type="button"
-                      onClick={() => setInvitePassword(generateRandomPassword())}
-                      className="text-[11px] font-bold text-blue-600 hover:text-blue-700"
-                    >
-                      ⚡ Auto-Generate
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    value={invitePassword}
-                    onChange={(e) => setInvitePassword(e.target.value)}
-                    placeholder="Leave blank to auto-generate password"
-                    className="w-full rounded-xl border border-neutral-300 px-3.5 py-2.5 text-sm font-mono focus:border-blue-600 focus:outline-none placeholder:font-sans placeholder:text-xs"
-                  />
-                  <p className="text-[10px] text-neutral-400 mt-1">
-                    Password will be generated and delivered in the member's invitation email.
-                  </p>
-                </div>
-
                 <div>
                   <label className="block text-xs font-bold text-neutral-700 mb-1">Assigned Role</label>
                   <select
@@ -333,7 +270,7 @@ export const MembersList = () => {
                   </Button>
                   <Button type="submit" disabled={sendingInvite || !inviteEmail} className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
                     {sendingInvite ? <RefreshCw className="mr-2 size-4 animate-spin" /> : <Mail className="mr-2 size-4" />}
-                    <span>Create Account & Send Invite</span>
+                    <span>Send Invitation</span>
                   </Button>
                 </div>
               </form>

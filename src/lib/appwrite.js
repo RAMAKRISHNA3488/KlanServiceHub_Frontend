@@ -1,29 +1,35 @@
-// Safe Client-side Shim for Legacy Appwrite References
+import { cookies } from 'next/headers';
+import { Account, Client, Databases, Storage, Users } from 'node-appwrite';
+import { AUTH_COOKIE } from '@/features/auth/constants';
 export async function createSessionClient() {
-  return {
-    get account() {
-      return {
-        get: async () => null,
-      };
-    },
-    get databases() {
-      return {};
-    },
-    get storage() {
-      return {};
-    },
-  };
+    const client = new Client().setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT).setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT);
+    const session = cookies().get(AUTH_COOKIE);
+    if (!session || !session.value)
+        throw new Error('Unauthorized.');
+    client.setSession(session.value);
+    return {
+        get account() {
+            return new Account(client);
+        },
+        get databases() {
+            return new Databases(client);
+        },
+        get storage() {
+            return new Storage(client);
+        },
+    };
 }
-
 export async function createAdminClient() {
-  return {
-    get account() {
-      return {
-        createOAuth2Token: async (provider, successUrl, failureUrl) => successUrl,
-      };
-    },
-    get users() {
-      return {};
-    },
-  };
+    const client = new Client()
+        .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
+        .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT)
+        .setKey(process.env.NEXT_APPWRITE_KEY);
+    return {
+        get account() {
+            return new Account(client);
+        },
+        get users() {
+            return new Users(client);
+        },
+    };
 }

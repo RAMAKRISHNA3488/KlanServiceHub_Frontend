@@ -34,7 +34,6 @@ export const UsersAdminView = () => {
   const [roleModalOpen, setRoleModalOpen] = useState(false);
   const [transferModalOpen, setTransferModalOpen] = useState(false);
   const [reassignModalOpen, setReassignModalOpen] = useState(false);
-  const [invitedSuccessData, setInvitedSuccessData] = useState(null);
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [targetNewOwnerId, setTargetNewOwnerId] = useState('');
@@ -44,20 +43,10 @@ export const UsersAdminView = () => {
   const [inviteForm, setInviteForm] = useState({
     name: '',
     email: '',
-    password: '',
     jobTitle: 'Software Engineer',
     department: 'Engineering',
     roleName: 'Developer',
   });
-
-  const generateRandomPassword = () => {
-    const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-    let rand = '';
-    for (let i = 0; i < 6; i++) {
-      rand += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return `Klan@${rand}2026!`;
-  };
 
   const fetchData = async () => {
     try {
@@ -83,27 +72,15 @@ export const UsersAdminView = () => {
     e.preventDefault();
     try {
       const res = await usersAdminApi.inviteUser(workspaceId, inviteForm);
-      const createdPassword = res?.password || inviteForm.password;
-      
-      setInvitedSuccessData({
-        name: inviteForm.name,
-        email: inviteForm.email,
-        password: createdPassword,
-        roleName: inviteForm.roleName,
-        inviteUrl: res?.inviteUrl || `/invite/${res?.token || ''}`,
-        emailSent: res?.emailSent,
-      });
-
       if (res?.emailSent) {
-        toast.success(`✉️ Invitation & credentials email sent successfully to ${inviteForm.email}!`);
+        toast.success(`✉️ Invitation email sent successfully to ${inviteForm.email}!`);
       } else {
-        toast.success(`Member account created for ${inviteForm.email}`);
+        toast.success(`Invitation created for ${inviteForm.email}`);
       }
-
+      setInviteModalOpen(false);
       setInviteForm({
         name: '',
         email: '',
-        password: '',
         jobTitle: 'Software Engineer',
         department: 'Engineering',
         roleName: 'Developer',
@@ -509,193 +486,95 @@ export const UsersAdminView = () => {
 
       {/* Invite Modal */}
       {inviteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-neutral-200">
             <div className="flex items-center justify-between pb-4 border-b border-neutral-100">
-              <h3 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-                <UserPlus className="size-4 text-blue-600" />
-                {invitedSuccessData ? 'Member Account Created' : 'Invite & Provision Member'}
-              </h3>
-              <button
-                onClick={() => {
-                  setInviteModalOpen(false);
-                  setInvitedSuccessData(null);
-                }}
-                className="text-neutral-400 hover:text-neutral-700"
-              >
+              <h3 className="text-base font-bold text-neutral-900">Invite Team Member</h3>
+              <button onClick={() => setInviteModalOpen(false)} className="text-neutral-400 hover:text-neutral-700">
                 <X className="size-4" />
               </button>
             </div>
 
-            {invitedSuccessData ? (
-              <div className="mt-4 space-y-4">
-                <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center space-y-2">
-                  <CheckCircle className="size-10 text-emerald-600 mx-auto" />
-                  <h4 className="text-sm font-bold text-emerald-950">Member Account Provisioned!</h4>
-                  <p className="text-xs text-emerald-800">
-                    Login credentials have been {invitedSuccessData.emailSent ? 'emailed directly to' : 'generated for'} <strong>{invitedSuccessData.email}</strong>.
-                  </p>
-                </div>
-
-                {/* Account Credentials Card */}
-                <div className="rounded-xl bg-slate-900 border border-slate-800 p-4 text-left space-y-2.5 text-xs text-slate-300">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-blue-400">🔑 Member Login Credentials</div>
-                  <div>
-                    <span className="text-[11px] text-slate-400 block">Login Email:</span>
-                    <span className="font-mono font-bold text-white text-xs">{invitedSuccessData.email}</span>
-                  </div>
-                  {invitedSuccessData.password && (
-                    <div>
-                      <span className="text-[11px] text-slate-400 block">Temporary Password:</span>
-                      <div className="flex items-center justify-between gap-2 mt-1 bg-slate-800/80 rounded-lg px-2.5 py-1.5 border border-slate-700">
-                        <span className="font-mono font-bold text-emerald-400 text-sm">{invitedSuccessData.password}</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(invitedSuccessData.password);
-                            toast.success('Password copied to clipboard!');
-                          }}
-                          className="text-[10px] bg-slate-700 hover:bg-slate-600 text-white font-bold px-2 py-1 rounded"
-                        >
-                          Copy
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const textToCopy = `KlanServiceHub Account Credentials:\nEmail: ${invitedSuccessData.email}\nTemporary Password: ${invitedSuccessData.password || '(As provided)'}\nWorkspace: ${window.location.origin}`;
-                      navigator.clipboard.writeText(textToCopy);
-                      toast.success('All credentials copied to clipboard!');
-                    }}
-                    className="flex-1 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold py-2.5 text-xs transition text-center"
-                  >
-                    Copy All Credentials
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setInviteModalOpen(false);
-                      setInvitedSuccessData(null);
-                    }}
-                    className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 text-xs transition text-center"
-                  >
-                    Done
-                  </button>
-                </div>
+            <form onSubmit={handleInvite} className="mt-4 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={inviteForm.name}
+                  onChange={(e) => setInviteForm({ ...inviteForm, name: e.target.value })}
+                  placeholder="John Doe"
+                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                />
               </div>
-            ) : (
-              <form onSubmit={handleInvite} className="mt-4 space-y-4">
+
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  required
+                  value={inviteForm.email}
+                  onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+                  placeholder="john.doe@company.com"
+                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1">Full Name *</label>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">Job Title</label>
                   <input
                     type="text"
-                    required
-                    value={inviteForm.name}
-                    onChange={(e) => setInviteForm({ ...inviteForm, name: e.target.value })}
-                    placeholder="John Doe"
+                    value={inviteForm.jobTitle}
+                    onChange={(e) => setInviteForm({ ...inviteForm, jobTitle: e.target.value })}
+                    placeholder="Developer"
                     className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1">Email Address *</label>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">Department</label>
                   <input
-                    type="email"
-                    required
-                    value={inviteForm.email}
-                    onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
-                    placeholder="john.doe@company.com"
+                    type="text"
+                    value={inviteForm.department}
+                    onChange={(e) => setInviteForm({ ...inviteForm, department: e.target.value })}
+                    placeholder="Engineering"
                     className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                   />
                 </div>
+              </div>
 
-                {/* Password Setting / Generation Field */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-semibold text-neutral-700">Temporary Password</label>
-                    <button
-                      type="button"
-                      onClick={() => setInviteForm({ ...inviteForm, password: generateRandomPassword() })}
-                      className="text-[11px] font-bold text-blue-600 hover:text-blue-700"
-                    >
-                      ⚡ Auto-Generate
-                    </button>
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={inviteForm.password}
-                      onChange={(e) => setInviteForm({ ...inviteForm, password: e.target.value })}
-                      placeholder="Leave blank to auto-generate password"
-                      className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none placeholder:font-sans placeholder:text-xs"
-                    />
-                  </div>
-                  <p className="text-[10px] text-neutral-400 mt-1">
-                    Password will be created and delivered directly in the invitation email.
-                  </p>
-                </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1">Initial Role</label>
+                <select
+                  value={inviteForm.roleName}
+                  onChange={(e) => setInviteForm({ ...inviteForm, roleName: e.target.value })}
+                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm bg-white focus:border-blue-500 focus:outline-none"
+                >
+                  {roles.map((r) => (
+                    <option key={r.id} value={r.name}>
+                      {r.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-neutral-700 mb-1">Job Title</label>
-                    <input
-                      type="text"
-                      value={inviteForm.jobTitle}
-                      onChange={(e) => setInviteForm({ ...inviteForm, jobTitle: e.target.value })}
-                      placeholder="Developer"
-                      className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-neutral-700 mb-1">Department</label>
-                    <input
-                      type="text"
-                      value={inviteForm.department}
-                      onChange={(e) => setInviteForm({ ...inviteForm, department: e.target.value })}
-                      placeholder="Engineering"
-                      className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1">Initial Role</label>
-                  <select
-                    value={inviteForm.roleName}
-                    onChange={(e) => setInviteForm({ ...inviteForm, roleName: e.target.value })}
-                    className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm bg-white focus:border-blue-500 focus:outline-none"
-                  >
-                    {roles.map((r) => (
-                      <option key={r.id} value={r.name}>
-                        {r.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
-                  <button
-                    type="button"
-                    onClick={() => setInviteModalOpen(false)}
-                    className="rounded-lg px-4 py-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow hover:bg-blue-700"
-                  >
-                    Create Account & Send Invite
-                  </button>
-                </div>
-              </form>
-            )}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
+                <button
+                  type="button"
+                  onClick={() => setInviteModalOpen(false)}
+                  className="rounded-lg px-4 py-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow hover:bg-blue-700"
+                >
+                  Send Invitation
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

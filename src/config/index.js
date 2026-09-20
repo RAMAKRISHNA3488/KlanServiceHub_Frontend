@@ -38,18 +38,23 @@ export const siteConfig = {
         'workspaces-management',
         'ui/ux',
         'appwrite-db',
-        'ticketing-tool',
+        'jira-clone',
         'date-fns',
         'cn',
         'clsx',
         'lucide-react',
     ],
     authors: {
-        name: 'Klanvision IT Solutions Private Limited',
-        url: 'https://klanvision.com',
+        name: 'Ramakrishna K (RK)',
+        url: 'https://ramakrishna3488.github.io/',
+        github: 'https://github.com/RAMAKRISHNA3488',
+        linkedin: 'https://www.linkedin.com/in/ramakrishna-k-a9a9811ab/',
+        instagram: 'https://www.instagram.com/k_ramakrishna_99/',
     },
 };
 export const links = {
-    corporate: 'https://klanvision.com',
-    support: 'mailto:support@klanvision.com',
+    sourceCode: 'https://github.com/RAMAKRISHNA3488',
+    portfolio: 'https://ramakrishna3488.github.io/',
+    linkedin: 'https://www.linkedin.com/in/ramakrishna-k-a9a9811ab/',
+    instagram: 'https://www.instagram.com/k_ramakrishna_99/',
 };

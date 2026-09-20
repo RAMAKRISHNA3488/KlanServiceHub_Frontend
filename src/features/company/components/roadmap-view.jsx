@@ -391,11 +391,11 @@ export const RoadmapView = () => {
 
             <button
               onClick={handleNext}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black text-black bg-white border border-neutral-300 hover:bg-neutral-100 active:bg-neutral-200 transition shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-neutral-700 bg-white border border-neutral-200 hover:bg-neutral-100 hover:text-neutral-900 active:bg-neutral-200 transition shadow-2xs"
               title="Next Time Period"
             >
-              <span className="text-black font-extrabold">Next</span>
-              <ChevronRight className="size-4 text-black stroke-[3]" />
+              <span>Next</span>
+              <ChevronRight className="size-4 text-neutral-600" />
             </button>
           </div>
 

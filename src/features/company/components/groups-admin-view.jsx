@@ -320,8 +320,8 @@ export const GroupsAdminView = () => {
   };
 
   const handleDeleteGroup = async (group) => {
-    if (group.is_system === 1 && (group.name === 'jira-administrators' || group.name === 'site-administrators')) {
-      toast.error(`The core system group "${group.name}" cannot be deleted`);
+    if (group.is_system === 1 && group.name === 'jira-administrators') {
+      toast.error('The core system group "jira-administrators" cannot be deleted');
       return;
     }
     const ok = await confirmAction({

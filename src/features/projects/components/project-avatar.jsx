@@ -9,7 +9,7 @@ export const ProjectAvatar = ({ image, name, className, fallbackClassName }) => 
     }
     return (<Avatar className={cn('size-5 rounded-md', className)}>
       <AvatarFallback className={cn('rounded-md bg-blue-600 text-sm font-semibold uppercase text-white', fallbackClassName)}>
-        {name ? name.charAt(0).toUpperCase() : 'P'}
+        {name.charAt(0)}
       </AvatarFallback>
     </Avatar>);
 };

@@ -23,18 +23,15 @@ export const Projects = () => {
         </button>
       </div>
 
-      {projects?.documents?.map((project) => {
-        const projectId = project.$id || project.id;
-        const href = `/workspaces/${workspaceId}/projects/${projectId}`;
-        const isActive = pathname === href;
-        return (
-          <Link href={href} key={projectId}>
-            <div className={cn('flex cursor-pointer items-center gap-2.5 rounded-md p-2 text-neutral-600 transition hover:bg-neutral-200/50 hover:text-neutral-900', isActive && 'bg-white font-semibold text-blue-600 shadow-2xs hover:opacity-100')}>
+      {projects?.documents.map((project) => {
+            const href = `/workspaces/${workspaceId}/projects/${project.$id}`;
+            const isActive = pathname === href;
+            return (<Link href={href} key={project.$id}>
+            <div className={cn('flex cursor-pointer items-center gap-2.5 rounded-md p-2.5 text-neutral-500 transition hover:opacity-75', isActive && 'bg-white text-primary shadow-sm hover:opacity-100')}>
               <ProjectAvatar image={project.imageUrl} name={project.name}/>
-              <span className="truncate text-xs">{project.name}</span>
+              <span className="truncate">{project.name}</span>
             </div>
-          </Link>
-        );
-      })}
+          </Link>);
+        })}
     </div>);
 };

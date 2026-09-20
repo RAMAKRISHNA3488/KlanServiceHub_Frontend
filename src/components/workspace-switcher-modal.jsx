@@ -127,7 +127,7 @@ export const WorkspaceSwitcherModal = ({ open, onClose }) => {
           <button
             onClick={() => {
               onClose();
-              navigate('/workspaces/create');
+              navigate('/onboarding');
             }}
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 py-2.5 text-xs font-bold text-white shadow-xs transition"
           >
