@@ -1,14 +1,12 @@
 import React from 'react';
 import { CookieBanner } from './cookie-banner';
 import { CookiePreferencesModal } from './cookie-preferences-modal';
-import { FloatingCookieButton } from './cookie-settings-button';
 
-export const CookieConsentRoot = ({ showFloatingTrigger = true }) => {
+export const CookieConsentRoot = () => {
   return (
     <>
       <CookieBanner />
       <CookiePreferencesModal />
-      {showFloatingTrigger && <FloatingCookieButton />}
     </>
   );
 };

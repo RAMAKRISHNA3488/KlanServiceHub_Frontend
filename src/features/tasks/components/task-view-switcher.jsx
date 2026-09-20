@@ -1,7 +1,7 @@
 'use client';
-import React, { Suspense, lazy, useCallback } from 'react';
 import { Loader2, PlusIcon } from 'lucide-react';
 import { useQueryState } from 'nuqs';
+import { useCallback } from 'react';
 import { DottedSeparator } from '@/components/dotted-separator';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,24 +13,11 @@ import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { useCurrent } from '@/features/auth/api/use-current';
 import { useGetMembers } from '@/features/members/api/use-get-members';
 import { columns } from './columns';
+import { DataCalendar } from './data-calendar';
 import { DataFilters } from './data-filters';
+import { DataKanban } from './data-kanban';
 import { DataSearch } from './data-search';
 import { DataTable } from './data-table';
-
-// Lazy load heavy components (Kanban drag-and-drop & Big Calendar)
-const DataKanban = lazy(() =>
-  import('./data-kanban').then((m) => ({ default: m.DataKanban }))
-);
-const DataCalendar = lazy(() =>
-  import('./data-calendar').then((m) => ({ default: m.DataCalendar }))
-);
-
-const TabLoader = () => (
-  <div className="flex h-[200px] w-full flex-col items-center justify-center rounded-lg border">
-    <Loader2 className="size-5 animate-spin text-muted-foreground" />
-  </div>
-);
-
 export const TaskViewSwitcher = ({ projectId, hideProjectFilter }) => {
     const [view, setView] = useQueryState('task-view', {
         defaultValue: 'table',
@@ -106,18 +93,13 @@ export const TaskViewSwitcher = ({ projectId, hideProjectFilter }) => {
             </TabsContent>
 
             <TabsContent value="kanban" className="mt-0">
-              <Suspense fallback={<TabLoader />}>
-                <DataKanban data={tasks?.documents ?? []} onChange={onKanbanChange} isAdmin={isAdmin}/>
-              </Suspense>
+              <DataKanban data={tasks?.documents ?? []} onChange={onKanbanChange} isAdmin={isAdmin}/>
             </TabsContent>
 
             <TabsContent value="calendar" className="mt-0 h-full pb-4">
-              <Suspense fallback={<TabLoader />}>
-                <DataCalendar data={tasks?.documents ?? []}/>
-              </Suspense>
+              <DataCalendar data={tasks?.documents ?? []}/>
             </TabsContent>
           </>)}
       </div>
     </Tabs>);
 };
-

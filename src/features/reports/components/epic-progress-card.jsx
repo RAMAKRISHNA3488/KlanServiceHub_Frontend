@@ -675,7 +675,7 @@ export const EpicProgressCard = ({
           onClick={onOpenHelp}
           className="text-purple-600 hover:underline font-semibold text-left sm:text-right"
         >
-          What is an Epic in KlanServiceHub?
+          What is an Epic in Jira?
         </button>
       </div>
     </div>

@@ -17,7 +17,7 @@ export const CookieConsentProvider = ({ children }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isPreferencesModalOpen, setIsPreferencesModalOpen] = useState(false);
 
-  // Sync state on client mount
+  // Sync state on client mount & listen for events
   useEffect(() => {
     setIsMounted(true);
     const existing = getStoredConsent();
@@ -29,9 +29,16 @@ export const CookieConsentProvider = ({ children }) => {
       setConsent(event.detail || null);
     };
 
+    const handleOpenModal = () => {
+      setIsPreferencesModalOpen(true);
+    };
+
     window.addEventListener(COOKIE_CONSENT_EVENT, handleConsentEvent);
+    window.addEventListener('open-cookie-preferences', handleOpenModal);
+
     return () => {
       window.removeEventListener(COOKIE_CONSENT_EVENT, handleConsentEvent);
+      window.removeEventListener('open-cookie-preferences', handleOpenModal);
     };
   }, []);
 

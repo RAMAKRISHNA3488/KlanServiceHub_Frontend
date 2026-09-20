@@ -1,42 +1,20 @@
 'use client';
-import React, { Suspense, lazy, useEffect, useState } from 'react';
-
-const CreateProjectModal = lazy(() =>
-  import('@/features/projects/components/create-project-modal').then((m) => ({
-    default: m.CreateProjectModal,
-  }))
-);
-const CreateTaskModal = lazy(() =>
-  import('@/features/tasks/components/create-task-modal').then((m) => ({
-    default: m.CreateTaskModal,
-  }))
-);
-const EditTaskModal = lazy(() =>
-  import('@/features/tasks/components/edit-task-modal').then((m) => ({
-    default: m.EditTaskModal,
-  }))
-);
-const CreateWorkspaceModal = lazy(() =>
-  import('@/features/workspaces/components/create-workspace-modal').then((m) => ({
-    default: m.CreateWorkspaceModal,
-  }))
-);
-
+import { useEffect, useState } from 'react';
+import { CreateProjectModal } from '@/features/projects/components/create-project-modal';
+import { CreateTaskModal } from '@/features/tasks/components/create-task-modal';
+import { EditTaskModal } from '@/features/tasks/components/edit-task-modal';
+import { CreateWorkspaceModal } from '@/features/workspaces/components/create-workspace-modal';
 export const ModalProvider = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) return null;
-
-  return (
-    <Suspense fallback={null}>
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+    if (!isMounted)
+        return null;
+    return (<>
       <CreateProjectModal />
       <CreateTaskModal />
       <EditTaskModal />
       <CreateWorkspaceModal />
-    </Suspense>
-  );
+    </>);
 };
-

@@ -135,18 +135,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
       toast.success('Signed in successfully! Opening klanservicehub...');
       handleRedirectAfterAuth(res.workspaceId);
     } catch (err) {
-      const errMsg = err.message || 'Invalid email or password. Please try again.';
-      if (errMsg.toLowerCase().includes('not exist') || errMsg.toLowerCase().includes('not found')) {
-        toast.error(errMsg, {
-          action: {
-            label: 'Register Now',
-            onClick: () => setActiveTab('REGISTER'),
-          },
-          duration: 6000,
-        });
-      } else {
-        toast.error(errMsg);
-      }
+      toast.error(err.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -179,18 +168,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
       toast.success('Account created successfully! Launching your workspace...');
       handleRedirectAfterAuth(res.workspaceId);
     } catch (err) {
-      const errMsg = err.message || 'Failed to create account.';
-      if (errMsg.toLowerCase().includes('already exists')) {
-        toast.error(errMsg, {
-          action: {
-            label: 'Login Instead',
-            onClick: () => setActiveTab('LOGIN'),
-          },
-          duration: 6000,
-        });
-      } else {
-        toast.error(errMsg);
-      }
+      toast.error(err.message || 'Failed to create account.');
     } finally {
       setLoading(false);
     }
@@ -211,19 +189,11 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
       setCountdown(600);
       setOtp(['', '', '', '', '', '']);
       toast.success(`Verification code sent to ${email}`);
-    } catch (err) {
-      const errMsg = err.message || 'User does not exist. Please check your email or register a new account.';
-      if (errMsg.toLowerCase().includes('not exist') || errMsg.toLowerCase().includes('not found')) {
-        toast.error(errMsg, {
-          action: {
-            label: 'Register Now',
-            onClick: () => setActiveTab('REGISTER'),
-          },
-          duration: 6000,
-        });
-      } else {
-        toast.error(errMsg);
+      if (res.simulatedOtp) {
+        toast.info(`Development Backup Code: ${res.simulatedOtp}`, { duration: 10000 });
       }
+    } catch (err) {
+      toast.error(err.message || 'User does not exist. Please check your email or register a new account.');
     } finally {
       setLoading(false);
     }
@@ -287,7 +257,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
         password,
       });
 
-      toast.success('Account setup complete! Welcome to KlanServiceHub.');
+      toast.success('Account setup complete! Welcome to Jira.');
       handleRedirectAfterAuth(res.workspaceId);
     } catch (err) {
       toast.error(err.message || 'Failed to complete registration.');
@@ -308,6 +278,9 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
       setLoading(true);
       const res = await authApi.forgotPassword({ email: email.trim() });
       toast.success(`✉️ Verification OTP and reset link sent to ${email}!`);
+      if (res?.simulatedOtp) {
+        toast.info(`Development Backup OTP: ${res.simulatedOtp}`, { duration: 10000 });
+      }
       setResetToken(res?.token || '');
       setActiveTab('RESET_PASSWORD');
       setResetStep('VERIFY_AND_RESET');
@@ -472,7 +445,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -499,7 +472,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -542,7 +515,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="John Doe"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -557,7 +530,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -572,7 +545,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -582,7 +555,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
             disabled={loading || !name || !email || !password}
             className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 py-3 text-sm font-bold text-white shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            {loading ? <RefreshCw className="size-4 animate-spin" /> : <span>Create KlanServiceHub Account</span>}
+            {loading ? <RefreshCw className="size-4 animate-spin" /> : <span>Create Jira Account</span>}
             {!loading && <ArrowRight className="size-4" />}
           </button>
         </form>
@@ -650,7 +623,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
             <p className="mt-1 text-[11px] text-neutral-400">
@@ -703,7 +676,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                       document.getElementById(`otp-${idx - 1}`)?.focus();
                     }
                   }}
-                  className="size-11 text-center font-bold text-lg text-black bg-white rounded-xl border border-neutral-300 focus:border-blue-600 focus:outline-none shadow-xs"
+                  className="size-11 text-center font-bold text-lg rounded-xl border border-neutral-300 focus:border-blue-600 focus:outline-none shadow-xs"
                 />
               ))}
             </div>
@@ -723,7 +696,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -739,7 +712,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
               />
             </div>
           </div>
@@ -749,7 +722,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
             disabled={loading || !password || !confirmPassword}
             className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 py-3 text-sm font-bold text-white shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            {loading ? <RefreshCw className="size-4 animate-spin" /> : <span>Reset Password & Enter KlanServiceHub</span>}
+            {loading ? <RefreshCw className="size-4 animate-spin" /> : <span>Reset Password & Enter Jira</span>}
             {!loading && <ArrowRight className="size-4" />}
           </button>
 
@@ -789,7 +762,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@company.com"
-                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2.5 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
@@ -827,7 +800,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                           document.getElementById(`otp-${idx - 1}`)?.focus();
                         }
                       }}
-                      className="size-11 text-center font-bold text-lg text-black bg-white rounded-xl border border-neutral-300 focus:border-blue-600 focus:outline-none shadow-xs"
+                      className="size-11 text-center font-bold text-lg rounded-xl border border-neutral-300 focus:border-blue-600 focus:outline-none shadow-xs"
                     />
                   ))}
                 </div>
@@ -874,7 +847,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="John Doe"
-                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
@@ -889,7 +862,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
@@ -904,7 +877,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none shadow-xs"
+                    className="w-full rounded-xl border border-neutral-300 pl-10 pr-3.5 py-2 text-sm font-medium focus:border-blue-600 focus:outline-none shadow-xs"
                   />
                 </div>
               </div>
@@ -1141,7 +1114,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                       ? 'user@company.com or @outlook.com'
                       : 'username@users.noreply.github.com'
                   }
-                  className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-xs font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-xs focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
@@ -1151,7 +1124,7 @@ export const EmailFirstAuth = ({ initialMode = 'SIGN_IN' }) => {
                   value={socialCustomName}
                   onChange={(e) => setSocialCustomName(e.target.value)}
                   placeholder="Your display name (optional)"
-                  className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-xs font-semibold text-black bg-white placeholder:text-neutral-500 placeholder:font-normal focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-xs focus:border-blue-600 focus:outline-none"
                 />
               </div>
 

@@ -72,7 +72,7 @@ export const SignUpCard = () => {
           <form onSubmit={signUpForm.handleSubmit(onSubmit)} className="space-y-4">
             <FormField disabled={isPending} name="name" control={signUpForm.control} render={({ field }) => (<FormItem>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="Full name" className="text-black font-semibold bg-white placeholder:text-neutral-500 placeholder:font-normal"/>
+                    <Input {...field} type="text" placeholder="Full name"/>
                   </FormControl>
 
                   <FormMessage />
@@ -80,7 +80,7 @@ export const SignUpCard = () => {
 
             <FormField disabled={isPending} name="email" control={signUpForm.control} render={({ field }) => (<FormItem>
                   <FormControl>
-                    <Input {...field} type="email" placeholder="Email address" className="text-black font-semibold bg-white placeholder:text-neutral-500 placeholder:font-normal"/>
+                    <Input {...field} type="email" placeholder="Email address"/>
                   </FormControl>
 
                   <FormMessage />
@@ -88,7 +88,7 @@ export const SignUpCard = () => {
 
             <FormField disabled={isPending} name="password" control={signUpForm.control} render={({ field }) => (<FormItem>
                   <FormControl>
-                    <Input {...field} type="password" placeholder="Password" className="text-black font-semibold bg-white placeholder:text-neutral-500 placeholder:font-normal"/>
+                    <Input {...field} type="password" placeholder="Password"/>
                   </FormControl>
 
                   <FormMessage />

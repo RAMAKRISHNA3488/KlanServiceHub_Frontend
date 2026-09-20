@@ -700,7 +700,7 @@ export const ServiceManagementView = () => {
                             <button
                               onClick={() => openEditTaskModal(req.task_id)}
                               className="p-1.5 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
-                              title="Open Linked Ticket"
+                              title="Open Jira Task"
                             >
                               <ExternalLink className="size-3.5" />
                             </button>
