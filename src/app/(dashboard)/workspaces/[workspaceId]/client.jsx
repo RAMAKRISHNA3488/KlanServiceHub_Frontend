@@ -107,7 +107,12 @@ export const WorkspaceIdClient = () => {
         toast.success(`Invitation created for ${inviteEmail}`);
       }
 
-      setSentInviteData({ email: inviteEmail, inviteUrl: res.inviteUrl });
+      setSentInviteData({
+        email: inviteEmail,
+        inviteUrl: res.inviteUrl,
+        password: res.password,
+        emailSent: res.emailSent,
+      });
       refetchMembers();
     } catch (err) {
       toast.error(err.message || 'Failed to send invitation');
@@ -205,38 +210,77 @@ export const WorkspaceIdClient = () => {
             </div>
 
             {sentInviteData ? (
-              <div className="space-y-4 py-2">
+              <div className="space-y-4 py-1">
                 <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center space-y-2">
-                  <CheckCircle2 className="size-10 text-emerald-600 mx-auto" />
-                  <h4 className="text-sm font-bold text-emerald-950">Invitation Email Dispatched!</h4>
+                  <CheckCircle2 className="size-9 text-emerald-600 mx-auto" />
+                  <h4 className="text-sm font-bold text-emerald-950">Member Account Ready!</h4>
                   <p className="text-xs text-emerald-800">
-                    An email was sent to <strong>{sentInviteData.email}</strong> via Gmail.
+                    Invitation generated for <strong>{sentInviteData.email}</strong>.
                   </p>
                   <p className="text-[11px] text-emerald-700 bg-emerald-100/60 rounded p-2 text-left">
-                    💡 <strong>Note:</strong> Automated invitation emails may sometimes land in the recipient's <strong>Spam / Junk</strong> folder or <strong>Updates</strong> tab. Please advise them to check there if not in primary inbox.
+                    💡 <strong>Tip:</strong> Share the direct link and login password below with the team member to let them join immediately.
                   </p>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-neutral-700">Direct Invitation Link:</label>
-                  <div className="flex gap-2">
-                    <input
-                      readOnly
-                      value={sentInviteData.inviteUrl}
-                      className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-xs bg-neutral-50 text-neutral-600 select-all"
-                    />
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => {
-                        navigator.clipboard.writeText(sentInviteData.inviteUrl);
-                        toast.success('Invitation link copied to clipboard!');
-                      }}
-                    >
-                      Copy Link
-                    </Button>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-neutral-700">Direct Invitation Link:</label>
+                    <div className="flex gap-2">
+                      <input
+                        readOnly
+                        value={sentInviteData.inviteUrl}
+                        className="flex-1 rounded-lg border border-neutral-300 px-3 py-1.5 text-xs bg-neutral-50 text-neutral-600 select-all font-mono"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => {
+                          navigator.clipboard.writeText(sentInviteData.inviteUrl);
+                          toast.success('Invitation link copied!');
+                        }}
+                      >
+                        Copy Link
+                      </Button>
+                    </div>
                   </div>
+
+                  {sentInviteData.password && (
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-neutral-700">Temporary Password:</label>
+                      <div className="flex gap-2">
+                        <input
+                          readOnly
+                          value={sentInviteData.password}
+                          className="flex-1 rounded-lg border border-neutral-300 px-3 py-1.5 text-xs bg-neutral-50 text-neutral-700 font-mono font-bold select-all"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => {
+                            navigator.clipboard.writeText(sentInviteData.password);
+                            toast.success('Password copied!');
+                          }}
+                        >
+                          Copy
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full text-xs font-semibold text-blue-600 border-blue-200 hover:bg-blue-50"
+                    onClick={() => {
+                      const msg = `Hi! You've been invited to join KlanServiceHub.\n\n🔗 Join Link: ${sentInviteData.inviteUrl}\n🔑 Email: ${sentInviteData.email}\n🔒 Temp Password: ${sentInviteData.password || '(use existing password)'}`;
+                      navigator.clipboard.writeText(msg);
+                      toast.success('Full invitation credentials copied to clipboard!');
+                    }}
+                  >
+                    📋 Copy Full Invitation Credentials
+                  </Button>
                 </div>
 
                 <Button
